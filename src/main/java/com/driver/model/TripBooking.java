@@ -22,6 +22,8 @@ public class TripBooking {
 
      private int distanceInKm;
 
+     private int bill;
+
      @Enumerated(EnumType.STRING)
      private TripStatus status;
 
