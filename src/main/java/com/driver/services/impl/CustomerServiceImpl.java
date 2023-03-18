@@ -13,6 +13,8 @@ import com.driver.repository.TripBookingRepository;
 import com.driver.model.TripStatus;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -30,19 +32,36 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public void register(Customer customer) {
 		//Save the customer in database
+		customerRepository2.save(customer);
 	}
 
 	@Override
 	public void deleteCustomer(Integer customerId) {
 		// Delete customer without using deleteById function
-
+		customerRepository2.deleteById(customerId);
 	}
 
 	@Override
 	public TripBooking bookTrip(int customerId, String fromLocation, String toLocation, int distanceInKm) throws Exception{
 		//Book the driver with lowest driverId who is free (cab available variable is Boolean.TRUE). If no driver is available, throw "No cab available!" exception
 		//Avoid using SQL query
+		List<Driver> driverList = driverRepository2.findAll();
+		Driver driver = null;
+		for(Driver d : driverList){
+			if(d.getCab().isAvailable()== true) driver = d;
+		}
+		if(driver==null){
+			throw new Exception("Driver doesn't exist");
+		}
+		Customer customer = customerRepository2.findById(customerId).get();
+		TripBooking newTripBooking = new TripBooking();
+		newTripBooking.setCustomer(customer);
+		newTripBooking.setDriver(driver);
+		newTripBooking.setFromLocation(fromLocation);
+		newTripBooking.setToLocation(toLocation);
+		newTripBooking.setDistanceInKm(distanceInKm);
 
+		return newTripBooking;
 	}
 
 	@Override
